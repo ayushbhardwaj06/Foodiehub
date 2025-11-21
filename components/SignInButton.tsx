@@ -32,7 +32,7 @@ export default function SignInButton({ provider, signUp }: SignInButtonProps) {
 
     await signIn.social({
       provider,
-      callbackURL: "/profile",
+      callbackURL: "/",
       errorCallbackURL: "/auth/login/error",
     });
 
