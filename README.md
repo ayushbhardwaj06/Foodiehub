@@ -638,6 +638,398 @@ model Password {
 
 ---
 
+## Test Cases
+
+### 1. Authentication Tests
+
+#### Test Case 1.1: User Registration
+```
+Scenario: New user successfully registers with email and password
+Steps:
+  1. Navigate to /auth/register
+  2. Enter name: "John Doe"
+  3. Enter email: "john@gmail.com"
+  4. Enter password: "SecurePass123"
+  5. Click Register button
+Expected Result: 
+  - Success toast message displayed
+  - Redirect to /auth/register/success
+  - User created in database with USER role
+  - Verification email sent
+```
+
+#### Test Case 1.2: User Login
+```
+Scenario: Registered user logs in with correct credentials
+Steps:
+  1. Navigate to /auth/login
+  2. Enter email: "john@gmail.com"
+  3. Enter password: "SecurePass123"
+  4. Click Login button
+Expected Result:
+  - Success toast message displayed
+  - Redirect to /profile
+  - Session created in database
+  - User authenticated
+```
+
+#### Test Case 1.3: Invalid Login Credentials
+```
+Scenario: User attempts login with wrong password
+Steps:
+  1. Navigate to /auth/login
+  2. Enter email: "john@gmail.com"
+  3. Enter password: "WrongPassword"
+  4. Click Login button
+Expected Result:
+  - Error toast message displayed
+  - Remain on /auth/login page
+  - No session created
+```
+
+#### Test Case 1.4: Magic Link Login
+```
+Scenario: User logs in using magic link
+Steps:
+  1. Navigate to /auth/login
+  2. Expand "Try Magic Link to Login"
+  3. Enter email: "john@gmail.com"
+  4. Click Send button
+  5. Check email for magic link
+  6. Click magic link in email
+Expected Result:
+  - Email sent successfully
+  - Toast confirmation shown
+  - Clicking link authenticates user
+  - Redirect to /profile
+```
+
+#### Test Case 1.5: Social Login (Google)
+```
+Scenario: User logs in with Google OAuth
+Steps:
+  1. Navigate to /auth/login
+  2. Click "Sign In with Google"
+  3. Complete Google OAuth flow
+  4. Authorize app access
+Expected Result:
+  - User redirected to homepage
+  - Account created/linked in database
+  - Session established
+  - User authenticated
+```
+
+#### Test Case 1.6: Password Reset
+```
+Scenario: User resets forgotten password
+Steps:
+  1. Navigate to /auth/forgot-password
+  2. Enter email: "john@gmail.com"
+  3. Click "Send Reset Link"
+  4. Check email for reset link
+  5. Click link in email
+  6. Enter new password: "NewSecurePass456"
+  7. Confirm password
+  8. Click "Reset Password"
+Expected Result:
+  - Reset link sent to email
+  - Link valid for limited time
+  - Password successfully changed
+  - Redirect to /auth/login
+  - Can login with new password
+```
+
+### 2. Recipe Management Tests
+
+#### Test Case 2.1: Create Recipe
+```
+Scenario: Authenticated user creates a new recipe
+Steps:
+  1. Login as user
+  2. Navigate to /dashboard/create
+  3. Enter recipe name: "Pasta Carbonara"
+  4. Select cuisine: "Italian"
+  5. Select difficulty: "Easy"
+  6. Enter prep time: 10 minutes
+  7. Enter cook time: 20 minutes
+  8. Enter servings: 4
+  9. Add ingredients: ["Pasta", "Eggs", "Bacon", "Parmesan"]
+  10. Add instructions: ["Cook pasta", "Fry bacon", "Mix ingredients", "Serve"]
+  11. Enter calories: 450
+  12. Upload image
+  13. Add tags: ["pasta", "italian", "quick"]
+  14. Select meal type: ["Lunch", "Dinner"]
+  15. Click Create Recipe
+Expected Result:
+  - Success toast shown
+  - Recipe created in database
+  - User redirected to /dashboard
+  - Recipe appears in user's recipe list
+```
+
+#### Test Case 2.2: View Recipe Details
+```
+Scenario: User views detailed recipe page
+Steps:
+  1. Navigate to /recipes
+  2. Click on a recipe card
+  3. Recipe detail page loads
+Expected Result:
+  - Recipe image displayed
+  - All ingredients visible
+  - Step-by-step instructions shown
+  - Chef information displayed
+  - Nutrition info visible
+  - Rating shown
+  - Save and Share buttons available
+```
+
+#### Test Case 2.3: Search Recipes
+```
+Scenario: User searches for recipes by keyword
+Steps:
+  1. Navigate to /recipes
+  2. Enter "pasta" in search bar
+  3. Press Enter
+Expected Result:
+  - Results filtered to recipes matching "pasta"
+  - Recipe cards updated
+  - No results message if no matches found
+  - Search includes name, cuisine, and ingredients
+```
+
+#### Test Case 2.4: Edit Recipe
+```
+Scenario: User edits their own recipe
+Steps:
+  1. Login as user
+  2. Navigate to /dashboard/recipes
+  3. Click Edit button on recipe
+  4. Modify recipe details
+  5. Click Update
+Expected Result:
+  - Recipe updated in database
+  - Success toast shown
+  - Changes reflected immediately
+```
+
+#### Test Case 2.5: Delete Recipe
+```
+Scenario: User deletes their own recipe
+Steps:
+  1. Login as user
+  2. Navigate to /dashboard/recipes
+  3. Click Delete button on recipe
+  4. Confirm deletion
+Expected Result:
+  - Recipe deleted from database
+  - Success toast shown
+  - Recipe removed from list
+  - Recipe no longer accessible at /recipes/[id]
+```
+
+### 3. User Profile Tests
+
+#### Test Case 3.1: Update Profile
+```
+Scenario: User updates their profile information
+Steps:
+  1. Login as user
+  2. Navigate to /dashboard/profile
+  3. Change name to "John Smith"
+  4. Change phone to "+1234567890"
+  5. Upload new profile image
+  6. Click Save
+Expected Result:
+  - Profile updated in database
+  - Changes visible immediately
+  - Success notification shown
+```
+
+#### Test Case 3.2: Change Password
+```
+Scenario: Authenticated user changes password
+Steps:
+  1. Login as user
+  2. Navigate to password change
+  3. Enter current password: "SecurePass123"
+  4. Enter new password: "NewPass789"
+  5. Confirm new password
+  6. Click Change Password
+Expected Result:
+  - Password updated in database
+  - Success message shown
+  - Can login with new password
+  - Old password no longer works
+```
+
+### 4. Admin Dashboard Tests
+
+#### Test Case 4.1: Admin Access Control
+```
+Scenario: Non-admin user attempts to access admin dashboard
+Steps:
+  1. Login as regular user
+  2. Try to navigate to /admin/dashboard
+Expected Result:
+  - Access denied (403 Forbidden)
+  - Redirect to home or show error message
+```
+
+#### Test Case 4.2: Admin User List
+```
+Scenario: SuperAdmin views user list
+Steps:
+  1. Login as SUPERADMIN
+  2. Navigate to /admin/dashboard
+  3. View user list
+Expected Result:
+  - All users displayed in table
+  - User details visible (ID, name, email, role)
+  - SUPERADMIN appears first in list
+```
+
+#### Test Case 4.3: Change User Role
+```
+Scenario: SuperAdmin changes user role
+Steps:
+  1. Login as SUPERADMIN
+  2. Navigate to /admin/dashboard
+  3. Find user "John Doe"
+  4. Change role from USER to ADMIN
+  5. Confirm change
+Expected Result:
+  - User role updated in database
+  - Table refreshes
+  - User now has ADMIN permissions
+```
+
+#### Test Case 4.4: Delete User
+```
+Scenario: SuperAdmin deletes a user account
+Steps:
+  1. Login as SUPERADMIN
+  2. Navigate to /admin/dashboard
+  3. Find user to delete
+  4. Click Delete button
+  5. Confirm deletion
+Expected Result:
+  - User deleted from database
+  - User's sessions terminated
+  - User's recipes cascade deleted (or reassigned)
+  - User can no longer login
+```
+
+### 5. Security Tests
+
+#### Test Case 5.1: SQL Injection Prevention
+```
+Scenario: Attempt SQL injection in search
+Steps:
+  1. Navigate to /recipes
+  2. Enter search: "'; DROP TABLE recipes; --"
+  3. Press Enter
+Expected Result:
+  - Query sanitized by Prisma
+  - No recipes deleted
+  - Treated as literal search string
+```
+
+#### Test Case 5.2: XSS Prevention
+```
+Scenario: Attempt XSS attack in recipe name
+Steps:
+  1. Login as user
+  2. Create recipe with name: "<script>alert('XSS')</script>"
+  3. View recipe
+Expected Result:
+  - Script not executed
+  - Rendered as plain text (escaped)
+  - No security breach
+```
+
+#### Test Case 5.3: CSRF Protection
+```
+Scenario: Verify CSRF token validation
+Steps:
+  1. Login as user
+  2. Attempt to submit form without CSRF token
+  3. Or attempt request from different origin
+Expected Result:
+  - Request rejected
+  - 403 Forbidden response
+  - Error message shown
+```
+
+#### Test Case 5.4: Rate Limiting
+```
+Scenario: Excessive login attempts
+Steps:
+  1. Navigate to /auth/login
+  2. Attempt to login 10+ times with wrong password
+Expected Result:
+  - After N attempts, IP/email rate limited
+  - Temporary lockout message shown
+  - Cannot attempt further logins for X minutes
+```
+
+### 6. Performance Tests
+
+#### Test Case 6.1: Homepage Load Time
+```
+Scenario: Homepage loads successfully and quickly
+Steps:
+  1. Navigate to homepage
+  2. Measure load time
+Expected Result:
+  - Page loads in < 3 seconds
+  - All images display
+  - Interactive elements responsive
+```
+
+#### Test Case 6.2: Recipe Search Performance
+```
+Scenario: Search among thousands of recipes
+Steps:
+  1. Navigate to /recipes
+  2. Enter search term
+  3. Measure response time
+Expected Result:
+  - Results return in < 1 second
+  - No lag or freezing
+  - Pagination works smoothly
+```
+
+### 7. Email Tests
+
+#### Test Case 7.1: Registration Email
+```
+Scenario: Verify registration email is sent
+Steps:
+  1. Register new user
+  2. Check email inbox
+Expected Result:
+  - Email received within 1 minute
+  - Contains verification link
+  - Link is valid for 1 hour
+  - Link works only once
+```
+
+#### Test Case 7.2: Password Reset Email
+```
+Scenario: Verify password reset email is sent
+Steps:
+  1. Trigger forgot password
+  2. Check email inbox
+Expected Result:
+  - Email received within 1 minute
+  - Contains reset link with token
+  - Link is valid for 24 hours
+  - Token works only once
+```
+
+---
+
 ## Key Features Summary
 
 | Feature | Technology | Purpose |
