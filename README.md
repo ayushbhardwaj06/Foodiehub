@@ -153,6 +153,541 @@ Defined in `prisma/schema.prisma`:
 
 ---
 
+---
+
+## Complete Project Structure
+
+```
+Foodiehub/
+├── actions/
+│   ├── addStoragePasswordAction.ts          # Add password to storage
+│   ├── changePasswordAction.ts              # Change user password
+│   ├── deleteStoragePasswordAction.ts       # Delete stored password
+│   ├── deleteUserAction.ts                  # Delete user account
+│   ├── editStoragePasswordAction.ts         # Edit stored password
+│   ├── getStoredPasswordAction.ts           # Retrieve stored passwords
+│   ├── recipe-actions.ts                    # Recipe CRUD operations
+│   ├── sendEmailActon.ts                    # Send email verification
+│   ├── signInEmailAction.ts                 # Email sign in
+│   ├── signUpEmailAction.ts                 # Email sign up
+│   └── ...                                  # Other actions
+├── app/
+│   ├── layout.tsx                           # Root layout
+│   ├── page.tsx                             # Homepage
+│   ├── globals.css                          # Global styles
+│   ├── admin/
+│   │   ├── layout.tsx                       # Admin layout
+│   │   └── dashboard/
+│   │       ├── page.tsx                     # Admin dashboard
+│   │       └── storage/
+│   │           └── page.tsx                 # Password storage management
+│   ├── api/
+│   │   └── auth/
+│   │       └── [...all]/
+│   │           └── route.ts                 # Better-auth API routes
+│   ├── auth/
+│   │   ├── forgot-password/
+│   │   │   ├── page.tsx                     # Forgot password page
+│   │   │   └── success/
+│   │   │       └── page.tsx                 # Success confirmation
+│   │   ├── login/
+│   │   │   ├── page.tsx                     # Login page
+│   │   │   └── error/
+│   │   │       └── page.tsx                 # Login error page
+│   │   ├── register/
+│   │   │   ├── page.tsx                     # Registration page
+│   │   │   └── success/
+│   │   │       └── page.tsx                 # Registration success
+│   │   ├── reset-password/
+│   │   │   └── page.tsx                     # Reset password page
+│   │   └── verify/
+│   │       ├── page.tsx                     # Email verification
+│   │       └── success/
+│   │           └── page.tsx                 # Verification success
+│   ├── dashboard/
+│   │   ├── layout.tsx                       # Dashboard layout
+│   │   ├── page.tsx                         # Dashboard overview
+│   │   ├── create/
+│   │   │   └── page.tsx                     # Create recipe page
+│   │   ├── profile/                         # User profile
+│   │   └── recipes/
+│   │       └── page.tsx                     # User recipes list
+│   └── recipes/
+│       ├── page.tsx                         # All recipes page
+│       └── [id]/
+│           └── page.tsx                     # Recipe detail page
+├── components/
+│   ├── ChangePasswordForm.tsx               # Change password form
+│   ├── DashboardSidebar.tsx                 # Dashboard navigation
+│   ├── DeleteRecipeButton.tsx               # Delete recipe button
+│   ├── DeleteUserButton.tsx                 # Delete user button
+│   ├── FeedbackCard.tsx                     # Testimonial card
+│   ├── ForgotPasswordForm.tsx               # Forgot password form
+│   ├── GetStartedButton.tsx                 # Call to action button
+│   ├── Header.tsx                           # Header component
+│   ├── LoginForm.tsx                        # Login form
+│   ├── MagicLinkLoginForm.tsx               # Magic link login
+│   ├── RecipeCard.tsx                       # Recipe card component
+│   ├── RecipeForm.tsx                       # Recipe creation form
+│   ├── RegisterForm.tsx                     # Registration form
+│   ├── ResetPasswordForm.tsx                # Reset password form
+│   ├── ReturnButton.tsx                     # Back button
+│   ├── SendVerificationEmailForm.tsx        # Email verification form
+│   ├── SignInButton.tsx                     # Social sign in button
+│   ├── SignOutButton.tsx                    # Sign out button
+│   ├── UpdateUserForm.tsx                   # Update profile form
+│   ├── UserRoleSelect.tsx                   # Role selection dropdown
+│   └── ui/
+│       ├── badge.tsx                        # Badge component
+│       ├── button.tsx                       # Button component
+│       ├── card.tsx                         # Card component
+│       ├── input.tsx                        # Input component
+│       ├── label.tsx                        # Label component
+│       └── sonner.tsx                       # Toast notifier
+├── lib/
+│   ├── argon2.ts                            # Password hashing
+│   ├── auth-client.ts                       # Client-side auth
+│   ├── auth.ts                              # Server-side auth
+│   ├── nodemailer.ts                        # Email configuration
+│   ├── permissions.ts                       # Role-based access control
+│   ├── prisma.ts                            # Prisma client
+│   ├── types.ts                             # TypeScript types
+│   └── utils.ts                             # Utility functions
+├── prisma/
+│   ├── schema.prisma                        # Database schema
+│   └── seed.ts                              # Database seeding
+├── public/                                  # Static assets
+├── middleware.ts                            # Route protection
+├── package.json                             # Dependencies
+├── tsconfig.json                            # TypeScript config
+├── tailwind.config.mjs                      # Tailwind config
+├── postcss.config.mjs                       # PostCSS config
+├── next.config.ts                           # Next.js config
+└── README.md                                # This file
+```
+
+---
+
+## Entity Relationship (ER) Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                              DATABASE SCHEMA                         │
+└─────────────────────────────────────────────────────────────────────┘
+
+┌────────────────────┐          ┌────────────────────┐
+│       User         │          │      Recipe        │
+├────────────────────┤          ├────────────────────┤
+│ id (PK)            │◄─────────│ id (PK)            │
+│ name               │ 1    Many │ name               │
+│ email (UNIQUE)     │          │ ingredients[]      │
+│ emailVerified      │          │ instructions[]     │
+│ image              │          │ prepTimeMinutes    │
+│ phone              │          │ cookTimeMinutes    │
+│ role               │          │ servings           │
+│ banned             │          │ difficulty         │
+│ banReason          │          │ cuisine            │
+│ banExpires         │          │ caloriesPerServing │
+│ createdAt          │          │ tags[]             │
+│ updatedAt          │          │ image              │
+└────────────────────┘          │ rating             │
+         △                        │ reviewCount        │
+         │                        │ mealType[]         │
+         │ 1                      │ userId (FK)        │
+         └──────Many──────────────│ createdAt          │
+                                  │ updatedAt          │
+                                  └────────────────────┘
+
+┌────────────────────┐          ┌──────────────────────┐
+│     Session        │          │      Account         │
+├────────────────────┤          ├──────────────────────┤
+│ id (PK)            │          │ id (PK)              │
+│ token (UNIQUE)     │          │ accountId            │
+│ expiresAt          │          │ providerId           │
+│ ipAddress          │          │ accessToken          │
+│ userAgent          │          │ refreshToken         │
+│ impersonatedBy     │          │ idToken              │
+│ userId (FK)        │          │ accessTokenExpiresAt │
+│ createdAt          │          │ refreshTokenExpiresAt│
+│ updatedAt          │          │ scope                │
+└────────────────────┘          │ password             │
+                                 │ userId (FK)          │
+┌────────────────────┐          │ createdAt            │
+│   Verification     │          │ updatedAt            │
+├────────────────────┤          └──────────────────────┘
+│ id (PK)            │
+│ identifier         │          ┌──────────────────────┐
+│ value              │          │     Password         │
+│ expiresAt          │          ├──────────────────────┤
+│ createdAt          │          │ id (PK)              │
+│ updatedAt          │          │ website              │
+└────────────────────┘          │ username             │
+                                 │ password (encrypted) │
+                                 │ ownerId (FK)         │
+                                 │ createdAt            │
+                                 │ updatedAt            │
+                                 └──────────────────────┘
+
+Relationships:
+- User (1) ──── (Many) Recipe     : User creates recipes
+- User (1) ──── (Many) Session    : User has sessions
+- User (1) ──── (Many) Account    : User has accounts
+- User (1) ──── (Many) Password   : User stores passwords
+```
+
+---
+
+## Data Flow Diagram (DFD)
+
+```
+LEVEL 0 - SYSTEM CONTEXT
+
+                        ┌─────────────────────┐
+                        │   FoodieHub System  │
+                        │  (Web Application)  │
+                        └─────────────────────┘
+                                 │
+                ┌────────────────┼────────────────┐
+                │                │                │
+                ▼                ▼                ▼
+            ┌────────┐      ┌─────────┐     ┌──────────┐
+            │  User  │      │  Admin  │     │ External │
+            │        │      │         │     │ Services │
+            └────────┘      └─────────┘     └──────────┘
+                │                │                │
+                ├─ Browse         ├─ Manage      ├─ Email
+                ├─ Create         ├─ Monitor     ├─ OAuth
+                ├─ Authenticate   └─ Control     └─ Images
+
+
+LEVEL 1 - MAIN PROCESSES
+
+                          ┌──────────────────┐
+                          │  Authentication  │
+                          │    Process       │
+                          └──────────────────┘
+                                  ▼
+                          ┌──────────────────┐
+                          │  User Profile    │
+                          │  Management      │
+                          └──────────────────┘
+                                  ▼
+                          ┌──────────────────┐
+                          │  Recipe CRUD     │
+                          │  Operations      │
+                          └──────────────────┘
+                                  ▼
+                          ┌──────────────────┐
+                          │  Admin Control   │
+                          │  Panel           │
+                          └──────────────────┘
+
+
+LEVEL 2 - DETAILED PROCESS FLOW
+
+    User Input
+        │
+        ▼
+    ┌──────────────────────┐
+    │  Frontend Component  │
+    │  (React)             │
+    └──────────────────────┘
+        │
+        ▼
+    ┌──────────────────────┐
+    │  Server Actions      │
+    │  (Next.js)           │
+    └──────────────────────┘
+        │
+        ▼
+    ┌──────────────────────┐
+    │  Authentication      │
+    │  Check (Middleware)  │
+    └──────────────────────┘
+        │
+        ▼
+    ┌──────────────────────┐
+    │  Business Logic      │
+    │  (Actions/APIs)      │
+    └──────────────────────┘
+        │
+        ▼
+    ┌──────────────────────┐
+    │  Prisma ORM          │
+    │  Database Queries    │
+    └──────────────────────┘
+        │
+        ▼
+    ┌──────────────────────┐
+    │  PostgreSQL          │
+    │  Database            │
+    └──────────────────────┘
+        │
+        ▼
+    Response Back to Client
+```
+
+---
+
+## Database Schema (Prisma)
+
+```prisma
+// User Model
+enum UserRole {
+  USER        // Regular user/home cook
+  ADMIN       // Administrator
+  SUPERADMIN  // Super administrator
+}
+
+model User {
+  id            String   @id @default(uuid())
+  createdAt     DateTime
+  updatedAt     DateTime
+  
+  // Profile Info
+  name          String
+  email         String    @unique
+  emailVerified Boolean
+  image         String?
+  phone         String?
+  
+  // Authorization
+  role          UserRole  @default(USER)
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
+  
+  // Relations
+  sessions      Session[]
+  accounts      Account[]
+  passwords     Password[]
+  recipes       Recipe[]
+  
+  @@map("users")
+}
+
+// Recipe Model
+model Recipe {
+  id                String   @id @default(uuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  // Recipe Details
+  name              String
+  ingredients       String[]
+  instructions      String[]
+  prepTimeMinutes   Int
+  cookTimeMinutes   Int
+  servings          Int      @default(4)
+  difficulty        String   // Easy, Medium, Hard
+  cuisine           String   // Italian, Chinese, etc.
+  caloriesPerServing Int
+  tags              String[]
+  mealType          String[] // Breakfast, Lunch, Dinner
+  
+  // Media & Ratings
+  image             String
+  rating            Float    @default(0)
+  reviewCount       Int      @default(0)
+  
+  // Relations
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("recipes")
+}
+
+// Session Model
+model Session {
+  id              String   @id @default(uuid())
+  createdAt       DateTime
+  updatedAt       DateTime
+  
+  // Session Data
+  expiresAt       DateTime
+  token           String   @unique
+  ipAddress       String?
+  userAgent       String?
+  impersonatedBy  String?
+  
+  // Relations
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("sessions")
+}
+
+// Account Model (for OAuth)
+model Account {
+  id                    String   @id @default(uuid())
+  createdAt             DateTime
+  updatedAt             DateTime
+  
+  // OAuth Provider Info
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  
+  // Relations
+  userId                String
+  user                  User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@map("accounts")
+}
+
+// Verification Model
+model Verification {
+  id        String    @id @default(uuid())
+  createdAt DateTime?
+  updatedAt DateTime?
+  
+  // Verification Data
+  identifier String
+  value      String
+  expiresAt  DateTime
+  
+  @@map("verifications")
+}
+
+// Password Storage Model
+model Password {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  // Stored Credentials
+  website   String
+  username  String
+  password  String   // Encrypted
+  
+  // Relations
+  ownerId   String
+  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  
+  @@map("passwords")
+}
+```
+
+---
+
+## Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    FOODIEHUB ARCHITECTURE                       │
+└─────────────────────────────────────────────────────────────────┘
+
+                            ┌──────────────┐
+                            │   Browser    │
+                            └──────────────┘
+                                  │
+                    ┌─────────────┴─────────────┐
+                    │                           │
+                    ▼                           ▼
+            ┌──────────────────┐        ┌──────────────────┐
+            │   Next.js App    │        │   Static Files   │
+            │   (Client)       │        │   (Images, CSS)  │
+            └──────────────────┘        └──────────────────┘
+                    │
+                    ▼
+            ┌──────────────────────────────────┐
+            │   Next.js Server (App Router)    │
+            ├──────────────────────────────────┤
+            │ - Pages (Server Components)      │
+            │ - API Routes                     │
+            │ - Server Actions                 │
+            │ - Middleware (Authentication)    │
+            └──────────────────────────────────┘
+                    │
+        ┌───────────┼───────────┐
+        │           │           │
+        ▼           ▼           ▼
+    ┌────────┐ ┌────────┐ ┌──────────┐
+    │Actions │ │Prisma  │ │ External │
+    │        │ │ORM     │ │ Services │
+    └────────┘ └────────┘ └──────────┘
+        │           │           │
+        │           ▼           │
+        │    ┌─────────────┐    │
+        │    │ PostgreSQL  │    │
+        │    │ Database    │    │
+        │    └─────────────┘    │
+        │                       │
+        └───────────┬───────────┘
+                    │
+        ┌───────────┴───────────┐
+        │                       │
+        ▼                       ▼
+    ┌──────────────┐     ┌──────────────┐
+    │ Better-Auth  │     │  Nodemailer  │
+    │ (OAuth)      │     │  (Email)     │
+    └──────────────┘     └──────────────┘
+        │                       │
+        ▼                       ▼
+    ┌──────────────┐     ┌──────────────┐
+    │ Google       │     │ Gmail SMTP   │
+    │ GitHub       │     │              │
+    └──────────────┘     └──────────────┘
+```
+
+---
+
+## Key Features Summary
+
+| Feature | Technology | Purpose |
+|---------|-----------|---------|
+| **Authentication** | better-auth, Nodemailer | Secure user login/registration |
+| **Database** | PostgreSQL, Prisma | Data persistence |
+| **Password Hashing** | Argon2 (@node-rs) | Secure password storage |
+| **UI Framework** | Tailwind CSS, Radix UI | Responsive design |
+| **Notifications** | Sonner | User feedback |
+| **Icons** | Lucide, React Icons | Visual elements |
+| **OAuth** | Google, GitHub | Social login |
+| **Email** | Nodemailer | Verification & password reset |
+
+---
+
+## User Roles & Permissions
+
+```
+┌─────────────┐
+│    USER     │
+└─────────────┘
+├─ Create recipes
+├─ View own recipes
+├─ Edit own recipes
+├─ Delete own recipes
+├─ View all recipes
+├─ Search recipes
+└─ Update profile
+
+┌─────────────┐
+│    ADMIN    │
+└─────────────┘
+├─ All USER permissions
+├─ Create/Edit/Delete any recipe
+├─ View user list
+└─ Modify user roles
+
+┌──────────────────┐
+│   SUPERADMIN     │
+└──────────────────┘
+├─ All permissions
+├─ Ban/Unban users
+├─ Delete users
+├─ Set user roles
+├─ Impersonate users
+└─ View system stats
+```
+
+---
+
 ## Screenshots
 > Add screenshots of the homepage, dashboard, recipe page, admin panel, etc. for your review presentation.
 
